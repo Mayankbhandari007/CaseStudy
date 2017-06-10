@@ -1,0 +1,77 @@
+<%@page import="monfox.toolkit.snmp.agent.modules.SnmpV2Mib.SysOREntry"%>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+    <%@page import="java.sql.*" %> 
+   <%@page import=" java.sql.Connection,java.sql.DriverManager,java.sql.ResultSet,java.sql.SQLException,java.sql.Statement" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Bill</title>
+</head>
+<body>
+
+<% 
+String billid=request.getParameter("search");
+
+Class.forName("oracle.jdbc.driver.OracleDriver");
+Connection con=DriverManager.getConnection(
+		"jdbc:oracle:thin:@localhost:1521:xe",
+		"system",
+		"system");
+
+String query1="select prod_name from products1 where sc_id=?";
+
+
+PreparedStatement ps1=con.prepareStatement(query1);
+
+ps1.setString(1,billid);
+
+
+ResultSet rs1=ps1.executeQuery(); 
+while(rs1.next()){%>
+	<b>Prod Name: <%=rs1.getString(1) %><br>
+
+<% }
+
+%>
+
+
+
+<% 
+String billid1=request.getParameter("search");
+
+
+
+
+String query2="select prod_name from products1 where c_id=?";
+
+
+PreparedStatement ps2=con.prepareStatement(query2);
+
+ps2.setString(1,billid1);
+
+ResultSet rs2=ps2.executeQuery(); %>
+<table border="2" width="1000" height="50">
+<tr>
+<th>Prod Name</th>
+
+</tr>
+
+<% while(rs2.next()){%>
+<TR>
+
+<TD>	<%=rs2.getString(1) %></TD>
+
+
+</TR>
+
+
+<% }
+
+%>
+
+</table>
+
+</body>
+</html>
