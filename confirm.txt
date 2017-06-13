@@ -1,0 +1,76 @@
+
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import com.techm.dao.MainLoginDao;
+import com.techm.dao.MainLoginDaoImpl;
+import com.techm.dto.MainLogin;
+import com.techm.util.JdbcConnection;
+
+/**
+ * Servlet implementation class ConfirmPassword
+ */
+public class ConfirmPassword extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     * 
+     */
+	public ConfirmPassword() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html");
+	try{	
+		
+		
+		PrintWriter out=response.getWriter();
+		String pass = request.getParameter("password");
+		String uname = request.getParameter("uname");
+		
+		
+		
+		Connection con = null;
+
+		con = JdbcConnection.getConnection();
+		PreparedStatement pst = con.prepareStatement("update customer_details set password=? where username=?");
+		
+		pst.setString(1,pass);
+		pst.setString(2,uname);
+			int n = pst.executeUpdate();
+			out.print(n);
+			System.out.println(n);
+		
+			if(n==1){
+				RequestDispatcher rs1 = request
+						.getRequestDispatcher("Login.jsp");
+				rs1.forward(request, response);
+			} else{
+				response.sendRedirect("index.jsp");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//System.out.println(login.getPassword() +" "+ login.getUsername());
+		//MainLoginDao loginDao = new MainLoginDaoImpl();
+		//MainLogin ml = new MainLogin(uname, pass);
+		//boolean value = loginDao.updatePassword(ml);
+		
+	}
+
+}
